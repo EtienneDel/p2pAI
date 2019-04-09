@@ -1,0 +1,22 @@
+{
+  "name": "p2pai",
+  "version": "1.0.0",
+  "description": "Peer to peer solution to train neural networks",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EtienneDel/p2pAI.git"
+  },
+  "author": "Etienne DELNOTT",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EtienneDel/p2pAI/issues"
+  },
+  "homepage": "https://github.com/EtienneDel/p2pAI#readme",
+  "devDependencies": {
+    "electron": "^4.1.4"
+  }
+}
