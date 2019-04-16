@@ -1,49 +1,46 @@
-const electron = require('electron');
-const url = require('url');
-const path = require('path');
+const { app, BrowserWindow } = require('electron')
 
-const {app, BrowserWindow, Menu} = electron;
+// Gardez une reference globale de l'objet window, si vous ne le faites pas, la fenetre sera
+// fermee automatiquement quand l'objet JavaScript sera garbage collected.
+let win
 
-let mainWindow;
+function createWindow () {
+  // Créer le browser window.
+  win = new BrowserWindow({ width: 800, height: 600 })
 
-app.on('ready', () => {
-    mainWindow = new BrowserWindow({});
-    mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'mainWindow.html'),
-        protocol: 'file:',
-        slashes: true
-    }))
+  // et charge le index.html de l'application.
+  win.loadFile('src/mainWindow/mainWindow.html')
 
-    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-    Menu.setApplicationMenu(mainMenu);
+  // Ouvre les DevTools.
+  win.webContents.openDevTools()
+
+  // Émit lorsque la fenêtre est fermée.
+  win.on('closed', () => {
+    // Dé-référence l'objet window , normalement, vous stockeriez les fenêtres
+    // dans un tableau si votre application supporte le multi-fenêtre. C'est le moment
+    // où vous devez supprimer l'élément correspondant.
+    win = null
+  })
+}
+
+// Cette méthode sera appelée quant Electron aura fini
+// de s'initialiser et sera prêt à créer des fenêtres de navigation.
+// Certaines APIs peuvent être utilisées uniquement quand cet événement est émit.
+app.on('ready', createWindow)
+
+// Quitte l'application quand toutes les fenêtres sont fermées.
+app.on('window-all-closed', () => {
+  // Sur macOS, il est commun pour une application et leur barre de menu
+  // de rester active tant que l'utilisateur ne quitte pas explicitement avec Cmd + Q
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
 })
 
-const mainMenuTemplate = [
-    {
-        label: 'File',
-        submenu: [{
-            label: 'Quit',
-            click(){
-                app.quit();
-            }
-        }]
-    }
-];
-
-if(process.env.NODE_ENV !== 'production'){
-    mainMenuTemplate.push({
-      label: 'Developer Tools',
-      submenu:[
-        {
-          role: 'reload'
-        },
-        {
-          label: 'Toggle DevTools',
-          accelerator:process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
-          click(item, focusedWindow){
-            focusedWindow.toggleDevTools();
-          }
-        }
-      ]
-    });
+app.on('activate', () => {
+  // Sur macOS, il est commun de re-créer une fenêtre de l'application quand
+  // l'icône du dock est cliquée et qu'il n'y a pas d'autres fenêtres d'ouvertes.
+  if (win === null) {
+    createWindow()
   }
+})
