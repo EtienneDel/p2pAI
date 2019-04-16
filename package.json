@@ -18,5 +18,8 @@
   "homepage": "https://github.com/EtienneDel/p2pAI#readme",
   "devDependencies": {
     "electron": "^4.1.4"
+  },
+  "dependencies": {
+    "electron-reload": "^1.4.0"
   }
 }
